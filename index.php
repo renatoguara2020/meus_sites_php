@@ -1,51 +1,51 @@
 <?php
-
-
-if(($_POST['firstname'] != null) && ($_POST['lastname'] != null) && ($_POST['email'] != null)){
-  $firstname = filter_input(INPUT_POST, 'firstname', FILTER_SANITIZE_SPECIAL_CHARS);
-  $lastname = filter_input(INPUT_POST, 'lastname', FILTER_SANITIZE_SPECIAL_CHARS);
-  $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
 $servername = "localhost";
 $username = "root";
 $password = "456alves";
 $dbname = "crud_pdo";
 
+if(!empty($_POST['btn-enviar'])){
+
+$lastname = filter_input(INPUT_POST,'lastname', FILTER_SANITIZE_SPECIAL_CHARS);
+$firstname = filter_input(INPUT_POST,'firstname', FILTER_SANITIZE_SPECIAL_CHARS);
+$email =  filter_input(INPUT_POST,'email', FILTER_SANITIZE_EMAIL);
+
+
+
 try {
   $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
   // set the PDO error mode to exception
   $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-  $conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
-  // sql to create table
-//   $sql = "CREATE TABLE MyGuests (
-//   id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-//   firstname VARCHAR(255) NOT NULL,
-//   lastname VARCHAR(255) NOT NULL,
-//   email VARCHAR(250),
-//   reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-//   )";
+  // prepare sql and bind parameters
+  $stmt = $conn->prepare("INSERT INTO students (firstname, lastname, email)VALUES (:firstname, :lastname, :email)");
+  $stmt->bindParam(':firstname', $firstname, PDO::PARAM_STR);
+  $stmt->bindParam(':lastname', $lastname, PDO::PARAM_STR);
+  $stmt->bindParam(':email', $email,PDO::PARAM_STR);
 
-$stmt = $conn->prepare("INSERT INTO employee (firstname, lastname, email)VALUES (:firstname,:lastname, :email)");
-$stmt->bindValue(':firstname',$firstname);
-$stmt->bindValue(':lastname',$lastname);
-$stmt->bindValue(':email',$email);
-
-  // use exec() because no results are returned
-
+  
   $stmt->execute();
-  echo "Employees created successfully";
+
+  echo "New records created successfully";
+
 } catch(PDOException $e) {
-  echo $sql . "<br>" . $e->getMessage();
-}
+    
+  echo "Error: " . $e->getMessage();
 }
 
+//$stmt = $conn->prepare("DELETE FROM students WHERE id = 15");
+
+
+$stmt->execute();
+
+
+
+
+$stmt = null;
 $conn = null;
+
+}
 ?>
-
-
-
-
-
 
 <!DOCTYPE html>
 <html lang="en">
