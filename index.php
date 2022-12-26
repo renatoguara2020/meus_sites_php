@@ -39,9 +39,9 @@ $conn = null;
 
 <?php
 $servername = "localhost";
-$username = "username";
-$password = "password";
-$dbname = "myDBPDO";
+$username = "root";
+$password = "456alves";
+$dbname = "crud_pdo";
 
 try {
   $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
